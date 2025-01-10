@@ -2,10 +2,11 @@ import axios from 'axios';
 import type { CustomerInfo } from '../types/booking';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://miamibeachchaam.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 export interface BookingData {
@@ -41,13 +42,13 @@ export interface BookingResponse {
 export const villaApi = {
   // Fetch villa details
   async getVillaDetails() {
-    const response = await api.get('/admin/villa');
+    const response = await api.get('/api/admin/villa');
     return response.data;
   },
 
   // Update villa details
   async updateVillaDetails(data: any) {
-    const response = await api.patch('/admin/villa', data);
+    const response = await api.patch('/api/admin/villa', data);
     return response.data;
   },
 
@@ -56,7 +57,7 @@ export const villaApi = {
     const formData = new FormData();
     formData.append('qrImage', file);
 
-    const response = await api.post('/admin/villa/promptpay-qr', formData, {
+    const response = await api.post('/api/admin/villa/promptpay-qr', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -66,7 +67,7 @@ export const villaApi = {
 
   // Delete PromptPay QR
   deleteQRCode: async () => {
-    const response = await api.delete('/admin/villa/promptpay-qr');
+    const response = await api.delete('/api/admin/villa/promptpay-qr');
     return response.data;
   },
 
@@ -75,7 +76,7 @@ export const villaApi = {
     const formData = new FormData();
     formData.append('backgroundImage', file);
 
-    const response = await api.patch('/admin/villa/background', formData, {
+    const response = await api.patch('/api/admin/villa/background', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -85,7 +86,7 @@ export const villaApi = {
 
   // Delete background image
   deleteBackgroundImage: async () => {
-    const response = await api.delete('/admin/villa/background');
+    const response = await api.delete('/api/admin/villa/background');
     return response.data;
   },
 
@@ -96,7 +97,7 @@ export const villaApi = {
       formData.append('slideImages', file);
     });
 
-    const response = await api.post('/admin/villa/slides', formData, {
+    const response = await api.post('/api/admin/villa/slides', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -106,7 +107,7 @@ export const villaApi = {
 
   // Delete slide image
   deleteSlideImage: async (index: number) => {
-    const response = await api.delete(`/admin/villa/slides/${index}`);
+    const response = await api.delete(`/api/admin/villa/slides/${index}`);
     return response.data;
   },
 
@@ -119,7 +120,7 @@ export const villaApi = {
       formData.append('roomImages', file);
     });
 
-    const response = await api.post('/admin/villa/rooms', formData, {
+    const response = await api.post('/api/admin/villa/rooms', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -137,7 +138,7 @@ export const villaApi = {
       });
     }
 
-    const response = await api.patch(`/admin/villa/rooms/${index}`, formData, {
+    const response = await api.patch(`/api/admin/villa/rooms/${index}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -146,13 +147,13 @@ export const villaApi = {
   },
 
   deleteRoom: async (index: number) => {
-    const response = await api.delete(`/admin/villa/rooms/${index}`);
+    const response = await api.delete(`/api/admin/villa/rooms/${index}`);
     return response.data;
   },
 
   // Villa rooms
   getVillaRooms: async () => {
-    const response = await api.get('/villa/rooms');
+    const response = await api.get('/api/villa/rooms');
     return response.data;
   },
 };
@@ -165,7 +166,7 @@ export const bookingApi = {
       const { customerInfo, ...bookingDataWithoutCustomer } = bookingData;
       
       console.log('API: Creating booking with data:', JSON.stringify(bookingDataWithoutCustomer, null, 2));
-      const response = await api.post('/booking', bookingDataWithoutCustomer);
+      const response = await api.post('/api/booking', bookingDataWithoutCustomer);
       console.log('API: Received response:', JSON.stringify(response.data, null, 2));
       
       if (response.data?.status === 'success') {
@@ -185,7 +186,7 @@ export const bookingApi = {
   updateBooking: async (id: string, data: Partial<BookingData>) => {
     try {
       console.log('API: Updating booking with data:', JSON.stringify(data, null, 2));
-      const response = await api.patch(`/booking/${id}`, data);
+      const response = await api.patch(`/api/booking/${id}`, data);
       
       if (response.data?.status === 'success') {
         return response.data;
@@ -203,7 +204,7 @@ export const bookingApi = {
 
   getBooking: async (id: string) => {
     try {
-      const response = await api.get(`/booking/${id}`);
+      const response = await api.get(`/api/booking/${id}`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -215,7 +216,7 @@ export const bookingApi = {
 
   getAllBookings: async () => {
     try {
-      const response = await api.get('/booking/all');
+      const response = await api.get('/api/booking/all');
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -227,7 +228,7 @@ export const bookingApi = {
 
   updateBookingStatus: async (id: string, status: string) => {
     try {
-      const response = await api.patch(`/booking/${id}`, { status });
+      const response = await api.patch(`/api/booking/${id}`, { status });
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -238,14 +239,14 @@ export const bookingApi = {
   },
 
   deleteBooking: async (id: string) => {
-    const response = await api.delete(`/booking/${id}`);
+    const response = await api.delete(`/api/booking/${id}`);
     return response.data;
   },
 
   // Update payment details
   async updatePaymentDetails(id: string, paymentMethod: 'bank_transfer' | 'promptpay', paymentSlipUrl?: string) {
     try {
-      const response = await api.patch(`/booking/${id}`, {
+      const response = await api.patch(`/api/booking/${id}`, {
         paymentMethod,
         paymentSlipUrl,
         status: paymentSlipUrl ? 'in_review' : 'pending_payment'
@@ -265,7 +266,7 @@ export const bookingApi = {
     formData.append('slip', file);
 
     try {
-      const response = await api.post('/upload/slip', formData, {
+      const response = await api.post('/api/upload/slip', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -282,7 +283,7 @@ export const bookingApi = {
   // Update customer info
   async updateCustomerInfo(id: string, customerInfo: CustomerInfo) {
     try {
-      const response = await api.patch(`/booking/${id}/customer-info`, {
+      const response = await api.patch(`/api/booking/${id}/customer-info`, {
         customerInfo
       });
       return response.data;
@@ -297,7 +298,7 @@ export const bookingApi = {
   // Send booking confirmation email
   async sendConfirmationEmail(id: string) {
     try {
-      const response = await api.post(`/booking/${id}/send-confirmation`);
+      const response = await api.post(`/api/booking/${id}/send-confirmation`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

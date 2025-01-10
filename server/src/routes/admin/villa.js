@@ -250,7 +250,7 @@ router.patch('/background', upload.villa.single('backgroundImage'), async (req, 
     }
 
     // Update villa with new background image path
-    villa.backgroundImage = `http://localhost:5001/uploads/villa/${req.file.filename}`;
+    villa.backgroundImage = `${process.env.CLIENT_URL}/uploads/villa/${req.file.filename}`;
     console.log('Setting new image URL:', villa.backgroundImage);
     await villa.save();
 
@@ -262,44 +262,6 @@ router.patch('/background', upload.villa.single('backgroundImage'), async (req, 
   }
 });
 
-router.post('/background', upload.villa.single('backgroundImage'), async (req, res) => {
-  try {
-    console.log('Received file upload request');
-    console.log('File:', req.file);
-
-    if (!req.file) {
-      console.log('No file received');
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
-
-    const villa = await Villa.findOne();
-    if (!villa) {
-      console.log('Villa not found');
-      return res.status(404).json({ message: 'Villa not found' });
-    }
-
-    // Delete old background image if it exists
-    if (villa.backgroundImage) {
-      const oldImagePath = path.join(__dirname, '../../../server/uploads/villa', path.basename(villa.backgroundImage));
-      console.log('Checking old image at:', oldImagePath);
-      if (fs.existsSync(oldImagePath)) {
-        console.log('Deleting old image');
-        fs.unlinkSync(oldImagePath);
-      }
-    }
-
-    // Update villa with new background image path
-    villa.backgroundImage = `http://localhost:5001/uploads/villa/${req.file.filename}`;
-    console.log('Setting new image URL:', villa.backgroundImage);
-    await villa.save();
-
-    console.log('Villa updated successfully');
-    res.json({ message: 'Background image updated successfully', backgroundImage: villa.backgroundImage });
-  } catch (error) {
-    console.error('Error updating background image:', error);
-    res.status(500).json({ message: 'Error updating background image', error: error.message });
-  }
-});
 
 // Handle slide images upload
 router.post('/slides', upload.villa.array('slideImages', 10), async (req, res) => {
@@ -332,7 +294,7 @@ router.post('/slides', upload.villa.array('slideImages', 10), async (req, res) =
     }
 
     // Update villa with new slide image paths
-    villa.slideImages = req.files.map(file => `http://localhost:5001/uploads/villa/${file.filename}`);
+    villa.slideImages = req.files.map(file => `${process.env.CLIENT_URL}/uploads/villa/${file.filename}`);
     console.log('Setting new slide image URLs:', villa.slideImages);
     await villa.save();
 
@@ -457,7 +419,7 @@ router.post('/promptpay-qr', upload.qr.single('qrImage'), async (req, res) => {
     if (!villa.promptPay) {
       villa.promptPay = {};
     }
-    villa.promptPay.qrImage = `http://localhost:5001/uploads/QR/${req.file.filename}`;
+    villa.promptPay.qrImage = `${process.env.CLIENT_URL}/uploads/QR/${req.file.filename}`;
     console.log('Setting new QR URL:', villa.promptPay.qrImage);
     await villa.save();
 
@@ -507,7 +469,7 @@ router.post('/rooms', upload.rooms.array('roomImages', 10), async (req, res) => 
       return res.status(404).json({ message: 'Villa not found' });
     }
 
-    const images = req.files ? req.files.map(file => `http://localhost:5001/uploads/rooms/${file.filename}`) : [];
+    const images = req.files ? req.files.map(file => `${process.env.CLIENT_URL}/uploads/rooms/${file.filename}`) : [];
     
     villa.rooms.push({
       name: JSON.parse(name),
@@ -546,7 +508,7 @@ router.patch('/rooms/:index', upload.rooms.array('roomImages', 10), async (req, 
           fs.unlinkSync(oldPath);
         }
       });
-      villa.rooms[index].images = req.files.map(file => `http://localhost:5001/uploads/rooms/${file.filename}`);
+      villa.rooms[index].images = req.files.map(file => `${process.env.CLIENT_URL}/uploads/rooms/${file.filename}`);
     }
 
     villa.rooms[index].name = JSON.parse(name);

@@ -32,7 +32,8 @@ export const loginAdmin = createAsyncThunk(
 export const registerAdmin = createAsyncThunk(
   'auth/registerAdmin',
   async (userData: { email: string; password: string; confirmPassword: string }) => {
-    const response = await api.post('/api/admin/auth/register', userData);
+    const { confirmPassword, ...registerData } = userData;
+    const response = await api.post('/api/admin/auth/register', registerData);
     const { token, user } = response.data;
     localStorage.setItem('adminToken', token);
     return { token, user };

@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5001/api', // Updated to match server configuration
+  baseURL: import.meta.env.VITE_API_URL || 'http://miamibeachchaam.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 // Add a request interceptor to add the token to all requests

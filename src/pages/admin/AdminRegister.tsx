@@ -6,7 +6,7 @@ import { registerAdmin } from '../../store/slices/authSlice';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import { Card } from '../../components/ui/card';
+import { Card } from '../../components/ui/Card';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
